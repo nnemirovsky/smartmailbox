@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartMailBox</title>
+    <link rel="shortcut icon" href="/favicon" type="image/x-icon">
+    <link href="/bootstrap" rel="stylesheet">
+    <!-- <link href="bootstrap.min.css" rel="stylesheet"> -->
+    <style>
+        .vertical-center {
+            min-height: 100%;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="jumbotron vertical-center">
+        <div class="container d-grid gap-4">
+            <div class="row justify-content-around">
+                <h1 id="counter" class="text-center">Total letters: </h1>
+            </div>
+            <div class="row justify-content-around">
+                <div class="d-grid col-md-3">
+                    <button type="submit" class="btn btn-danger" id="reset_counter">Reset counter</button>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-md-5">
+                    <h3>WiFi</h3>
+                    <form action="/api/config/wifi/sta" id="wifi_sta">
+                        <div class="mb-3">
+                            <label for="sta_ssid">SSID</label>
+                            <input class="form-control" type="text" name="ssid" id="sta_ssid">
+                        </div>
+                        <div class="mb-3">
+                            <label for="sta_pass">Password</label>
+                            <input class="form-control" type="password" name="pass" id="sta_pass">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-5">
+                    <h3>WiFi Direct</h3>
+                    <form action="/api/config/wifi/ap" id="wifi_ap">
+                        <div class="mb-3">
+                            <label for="ap_ssid">SSID</label>
+                            <input class="form-control" type="text" name="ssid" id="ap_ssid">
+                        </div>
+                        <div class="mb-3">
+                            <label for="ap_pass">Password</label>
+                            <input class="form-control" type="password" name="pass" id="ap_pass">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="col-md-5">
+                    <h3>Network</h3>
+                    <form action="/api/config/network" id="network">
+                        <div class="mb-3">
+                            <label for="ip">IP</label>
+                            <input class="form-control" type="text" name="ip" id="ip">
+                        </div>
+                        <div class="mb-3">
+                            <label for="gateway">Gateway</label>
+                            <input class="form-control" type="text" name="gateway" id="gateway">
+                        </div>
+                        <div class="mb-3">
+                            <label for="subnet">Subnet</label>
+                            <input class="form-control" type="text" name="subnet" id="subnet">
+                        </div>
+                        <div class="mb-3">
+                            <label for="mdns">mDNS host</label>
+                            <input class="form-control" type="text" name="mdns" id="mdns">
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-md-5">
+                    <h3>Telegram</h3>
+                    <form action="/api/config/telegram" id="telegram">
+                        <div class="mb-3">
+                            <label for="token">Token</label>
+                            <input class="form-control" type="text" name="token" id="token">
+                        </div>
+                        <div class="mb-3">
+                            <label for="chat_id">Chat ID</label>
+                            <input class="form-control" type="text" name="chat_id" id="chat_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="text">Notification text</label>
+                            <input class="form-control" type="text" name="text" id="text">
+                            <div class="form-text">Paste this template <strong>$counter$</strong> where you want to see the mail counter</div>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row justify-content-around">
+                <div class="d-grid col-md-3">
+                    <button type="submit" class="btn btn-danger" id="restart">Restart SmartMailBox</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.onload = function () {
+            document.querySelector('#wifi_sta').addEventListener('submit', submitForm)
+            document.querySelector('#wifi_ap').addEventListener('submit', submitForm)
+            document.querySelector('#network').addEventListener('submit', submitForm)
+            document.querySelector('#telegram').addEventListener('submit', submitForm)
+            document.querySelector('#reset_counter').addEventListener('click', resetCounter)
+            document.querySelector('#restart').addEventListener('click', restart)
+
+            let xhr = new XMLHttpRequest()
+
+            xhr.open('GET', '/api/counter', false)
+            xhr.send()
+            document.querySelector("#counter").textContent += xhr.responseText
+
+            xhr.open('GET', '/api/config', false)
+            xhr.send()
+            conf = JSON.parse(xhr.responseText)
+
+            document.querySelector('#sta_ssid').value = conf["wifi"]["sta"]["ssid"]
+            document.querySelector('#sta_pass').value = conf["wifi"]["sta"]["pass"]
+            document.querySelector('#ap_ssid').value = conf["wifi"]["ap"]["ssid"]
+            document.querySelector('#ap_pass').value = conf["wifi"]["ap"]["pass"]
+            document.querySelector('#ip').value = conf["network"]["ip"]
+            document.querySelector('#gateway').value = conf["network"]["gateway"]
+            document.querySelector('#subnet').value = conf["network"]["subnet"]
+            document.querySelector('#mdns').value = conf["network"]["mdns"]
+            document.querySelector('#token').value = conf["telegram"]["token"]
+            document.querySelector('#chat_id').value = conf["telegram"]["chat_id"]
+            document.querySelector('#text').value = conf["telegram"]["text"]
+        }()
+
+        function resetCounter() {
+            let xhr = new XMLHttpRequest()
+            xhr.open('POST', '/api/counter', false)
+            xhr.send()
+            window.location.reload()
+        }
+
+        function restart() {
+            let xhr = new XMLHttpRequest()
+            xhr.open('GET', '/api/restart', false)
+            xhr.send()
+            window.location.reload()
+        }
+
+        function submitForm(event) {
+            event.preventDefault();
+            let formData = new FormData(event.target)
+            let obj = {}
+            formData.forEach((value, key) => obj[key] = value)
+            let request = new Request(event.target.action, {
+                method: 'POST',
+                body: JSON.stringify(obj),
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            fetch(request).then(
+                function (response) {
+                    console.log(response);
+                    // return response.json()
+                },
+                function (error) {
+                    console.error(error);
+                }
+            )
+        }
+    </script>
+</body>
+
+</html>
