@@ -1,12 +1,8 @@
 # SmartMailBox
 
----
-
 This ESP8266 project makes the mailbox smarter. It included letter counter and telegram notification
 
-### Usage
-
----
+## Usage
 
 - Rename **data/config.example** to **data/config**
 - Change all configuration parameters to your own
