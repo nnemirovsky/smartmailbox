@@ -16,26 +16,24 @@ ESP8266WebServer server(80);
 void setup(void) {
   pinMode(counterPin, INPUT_PULLUP);
   pinMode(counterResetPin, INPUT_PULLUP);
-
+  
   Serial.begin(115200);
   delay(100);
-//  while (!Serial) continue;
-  
+
   SPIFFS.begin();
   delay(100);
   
   readCounter();
   readConfig();
   delay(500);
-
+  
   WiFi.mode(WIFI_AP_STA);
   WiFi.config(ip, gateway, subnet);
   WiFi.softAP(ap_ssid, ap_pass);
   WiFi.begin(sta_ssid, sta_pass);
   WiFi.waitForConnectResult();
   MDNS.begin(mdns);
-
-  //  server.sendHeader("Access-Control-Allow-Origin", "*");
+  
   server.on("/", HTTP_GET, handleRoot);
   server.on("/api/restart", HTTP_GET, handleRestart);
   server.on("/api/counter", HTTP_GET, handleGetCounter);
@@ -60,19 +58,15 @@ void setup(void) {
 void loop(void) {
   server.handleClient();
   MDNS.update();
-
-  // Inc counter
+  
   int state = digitalRead(counterPin);
   if ((state == LOW) && (counterPin_old == 1)) {
-    count++;
-    writeCounter();
+    count++; writeCounter();
     sendNotification();
   }
   counterPin_old = state;
   delay(10);
-
-
-  // Reset counter
+  
   if ((digitalRead(counterResetPin) == LOW) && (count != 0)) {
     resetCounter();
   }

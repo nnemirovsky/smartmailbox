@@ -52,5 +52,5 @@ void sendNotification() {
   url.replace("$counter$", String(count));
   https.begin(*client, url);
   https.GET();
-  //  https.end();
+  https.end();
 }
