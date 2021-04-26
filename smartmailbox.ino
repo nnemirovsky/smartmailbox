@@ -8,9 +8,29 @@
 #define counterPin 14
 #define counterResetPin 12
 
-String sta_ssid, sta_pass, ap_ssid, ap_pass, mdns, token, chat_id, text;
+struct wifi {
+  String ssid;
+  String pass;
+};
+
+struct telegram {
+  String token;
+  String chat_id;
+  String text;
+};
+
+struct network {
+  IPAddress ip; 
+  IPAddress gateway;
+  IPAddress subnet;
+  String mdns;
+};
+
+wifi sta;
+wifi ap;
+telegram telegram;
+network network;
 int count = 0, counterPin_old = 1;
-IPAddress ip, gateway, subnet;
 ESP8266WebServer server(80);
 
 void setup(void) {
@@ -28,11 +48,11 @@ void setup(void) {
   delay(500);
   
   WiFi.mode(WIFI_AP_STA);
-  WiFi.config(ip, gateway, subnet);
-  WiFi.softAP(ap_ssid, ap_pass);
-  WiFi.begin(sta_ssid, sta_pass);
+  WiFi.config(network.ip, network.gateway, network.subnet);
+  WiFi.softAP(ap.ssid, ap.pass);
+  WiFi.begin(sta.ssid, sta.pass);
   WiFi.waitForConnectResult();
-  MDNS.begin(mdns);
+  MDNS.begin(network.mdns);
   
   server.on("/", HTTP_GET, handleRoot);
   server.on("/api/restart", HTTP_GET, handleRestart);

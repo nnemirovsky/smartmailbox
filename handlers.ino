@@ -169,9 +169,9 @@ void handleSetTelegramConfig() {
   if (err) {
     server.send(400, "application/json", "{\"msg\":\"" + String(err.c_str()) + "\"}");
   } else {
-    token = subconf["token"].as<String>();
-    chat_id = subconf["chat_id"].as<String>();
-    text = subconf["text"].as<String>();
+    telegram.token = subconf["token"].as<String>();
+    telegram.chat_id = subconf["chat_id"].as<String>();
+    telegram.text = subconf["text"].as<String>();
     conf["telegram"] = subconf;
     serializeJson(conf, conf_str);
     saveConfig(conf_str);
