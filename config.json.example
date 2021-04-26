@@ -1,0 +1,23 @@
+{
+    "wifi": {
+        "sta": {
+            "ssid": "ssid of your wifi",
+            "pass": "pass of your wifi"
+        },
+        "ap": {
+            "ssid": "SmartMailBox",
+            "pass": "smartmailbox123456"
+        }
+    },
+    "network": {
+        "ip": "192.168.1.100",
+        "gateway": "192.168.1.1",
+        "subnet": "255.255.255.0",
+        "mdns": "smartmailbox"
+    },
+    "telegram": {
+        "token": "xxxxxxxxxx:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+        "chat_id": "000000000",
+        "text": "You have a new letter! Total letters: $counter$"
+    }
+}

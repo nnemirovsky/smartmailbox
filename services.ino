@@ -1,11 +1,11 @@
 void writeCounter() {
-  File f = SPIFFS.open("/counter", "w");
+  File f = SPIFFS.open(counterFile, "w");
   f.write(count);
   f.close();
 }
 
 void readCounter() {
-  File f = SPIFFS.open("/counter", "r");
+  File f = SPIFFS.open(counterFile, "r");
   count = f.read();
   f.close();
 }
@@ -17,14 +17,14 @@ void resetCounter() {
 
 DynamicJsonDocument getConfig() {
   DynamicJsonDocument conf(1024);
-  File f = SPIFFS.open("/config", "r");
+  File f = SPIFFS.open(configFile, "r");
   deserializeJson(conf, f);
   f.close();
   return conf;
 }
 
 void saveConfig(String conf) {
-  File f = SPIFFS.open("/config", "w");
+  File f = SPIFFS.open(configFile, "w");
   f.print(conf);
   f.close();
 }

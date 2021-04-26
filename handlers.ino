@@ -1,16 +1,16 @@
 void handleFavicon() {
-  File f = SPIFFS.open("/favicon.png", "r");
+  File f = SPIFFS.open(faviconFile, "r");
   server.streamFile(f, "image/png");
   f.close();
 }
 
 void handleBootstrap() {
-  File f = SPIFFS.open("/bootstrap.min.css", "r");
+  File f = SPIFFS.open(bootstrapFile, "r");
   server.streamFile(f, "text/css");
   f.close();
 }
 void handleRoot() {
-  File f = SPIFFS.open("/index.html", "r");
+  File f = SPIFFS.open(indexPageFile, "r");
   server.streamFile(f, "text/html");
   f.close();
 }

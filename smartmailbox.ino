@@ -7,6 +7,11 @@
 
 #define counterPin 14
 #define counterResetPin 12
+#define counterFile "/counter"
+#define configFile "/config.json"
+#define indexPageFile "/index.html"
+#define bootstrapFile "/bootstrap.min.css"
+#define faviconFile "/favicon.png"
 
 struct wifi {
   String ssid;
@@ -39,7 +44,7 @@ void setup(void) {
   
   Serial.begin(115200);
   delay(100);
-
+  
   SPIFFS.begin();
   delay(100);
   
@@ -69,8 +74,8 @@ void setup(void) {
   server.on("/api/config/network", HTTP_POST, handleSetNetworkConfig);
   server.on("/api/config/telegram", HTTP_GET, handleGetTelegramConfig);
   server.on("/api/config/telegram", HTTP_POST, handleSetTelegramConfig);
-  server.on("/favicon", HTTP_GET, handleFavicon);
-  server.on("/bootstrap", HTTP_GET, handleBootstrap);
+  server.on(faviconFile, HTTP_GET, handleFavicon);
+  server.on(bootstrapFile, HTTP_GET, handleBootstrap);
   server.onNotFound(handleNotFound);
   server.begin();
 }
